@@ -85,3 +85,25 @@ Ngoài khả năng có thể tạo server theo mô hình MVC, Nest.JS cũng có 
 ```bash
 nest g resource users --no-spec
 ```
+
+Code mẫu ở controller khi dùng lệnh generate
+
+```js
+@Post()
+create(@Body() createUserDto: CreateUserDto) {
+  return this.usersService.create(createUserDto);
+}
+
+@Get()
+findAll(@Body() query: any) {
+  return this.usersService.findAll(query);
+}
+
+@Get(':id')
+findOne(@Param('id') id: string) {
+  return this.usersService.findOne(+id);
+}
+
+```
+
+@Body() tương tự cho `req.body`
