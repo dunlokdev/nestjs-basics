@@ -36,10 +36,10 @@ import { APP_FILTER, APP_GUARD } from '@nestjs/core';
   controllers: [AppController],
   providers: [
     AppService,
-    {
-      provide: APP_GUARD,
-      useClass: JwtAuthGuard, // Sử dụng guard cho tất cả các route
-    },
+    // {
+    //   provide: APP_GUARD,
+    //   useClass: JwtAuthGuard, // Sử dụng guard cho tất cả các route
+    // },
   ],
 })
 export class AppModule {}
