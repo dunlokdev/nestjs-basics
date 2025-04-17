@@ -1,7 +1,9 @@
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
 import { HydratedDocument } from 'mongoose';
+import { SoftDeleteModel } from 'soft-delete-plugin-mongoose';
 
 export type UserDocument = HydratedDocument<User>;
+export type UserModel = SoftDeleteModel<UserDocument>;
 
 @Schema({ timestamps: true })
 export class User {

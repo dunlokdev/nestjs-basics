@@ -16,7 +16,7 @@ async function bootstrap() {
   app.setViewEngine('ejs');
 
   app.useGlobalPipes(new ValidationPipe());
-  app.useGlobalGuards(new JwtAuthGuard(reflector)); // Use the custom JWT guard
+  // app.useGlobalGuards(new JwtAuthGuard(reflector)); // Use the custom JWT guard
 
   await app.listen(configService.get('PORT'));
   console.log(`Application is running on: ${await app.getUrl()}`);

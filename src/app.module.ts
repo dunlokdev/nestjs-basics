@@ -8,6 +8,7 @@ import { AuthModule } from './auth/auth.module';
 import { ProductModule } from './product/product.module';
 import { JwtAuthGuard } from './auth/jwt-auth.guard';
 import { APP_FILTER, APP_GUARD } from '@nestjs/core';
+import { softDeletePlugin } from 'soft-delete-plugin-mongoose';
 
 @Module({
   imports: [
@@ -21,6 +22,7 @@ import { APP_FILTER, APP_GUARD } from '@nestjs/core';
         connectionFactory: (connection) => {
           connection.on('error', (err) => console.log('MongoDB error:', err));
           connection.on('connected', () => console.log('MongoDB connected'));
+          connection.plugin(softDeletePlugin);
           return connection;
         },
       }),

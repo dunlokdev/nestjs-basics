@@ -1,16 +1,14 @@
 import { HttpException, Injectable } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import * as bcrypt from 'bcryptjs';
-import { Model } from 'mongoose';
+import mongoose, { Model } from 'mongoose';
 import { CreateUserDto } from './dto/create-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
-import { User } from './schemas/user.schema';
+import { UserModel, User } from './schemas/user.schema';
 
 @Injectable()
 export class UsersService {
-  constructor(
-    @InjectModel(User.name) private readonly userModel: Model<User>,
-  ) {}
+  constructor(@InjectModel(User.name) private readonly userModel: UserModel) {}
 
   getHashPassword(password: string) {
     const salt = bcrypt.genSaltSync(10);
@@ -61,7 +59,11 @@ export class UsersService {
     return this.userModel.updateOne({ _id: id }, updateUserDto);
   }
 
-  remove(id: number) {
-    return this.userModel.deleteOne({ _id: id });
+  remove(id: string) {
+    if (!mongoose.Types.ObjectId.isValid(id)) {
+      throw new HttpException('Invalid ID format', 400);
+    }
+
+    return this.userModel.softDelete({ _id: id });
   }
 }
