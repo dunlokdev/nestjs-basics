@@ -1,8 +1,10 @@
-import { Injectable } from '@nestjs/common';
+import { BadRequestException, Injectable } from '@nestjs/common';
 import { CreateCompanyDto } from './dto/create-company.dto';
 import { UpdateCompanyDto } from './dto/update-company.dto';
 import { InjectModel } from '@nestjs/mongoose';
 import { Company, CompanyModel } from './schemas/company.schema';
+import { IUser } from 'src/users/user.interface';
+import { Types } from 'mongoose';
 
 @Injectable()
 export class CompaniesService {
@@ -10,15 +12,24 @@ export class CompaniesService {
     @InjectModel(Company.name) private readonly companyModel: CompanyModel,
   ) {}
 
-  async create(createCompanyDto: CreateCompanyDto) {
+  async create(createCompanyDto: CreateCompanyDto, user: IUser) {
     const existingCompany = await this.companyModel.findOne({
       name: createCompanyDto.name,
     });
+
     if (existingCompany) {
-      throw new Error('Company already exists');
+      throw new BadRequestException('Company already exists');
     }
 
-    return await this.companyModel.create(createCompanyDto);
+    const companyData: Partial<Company> = {
+      ...createCompanyDto,
+      createdBy: {
+        _id: new Types.ObjectId(user._id),
+        email: user.email,
+      },
+    };
+
+    return await this.companyModel.create(companyData);
   }
 
   findAll() {
