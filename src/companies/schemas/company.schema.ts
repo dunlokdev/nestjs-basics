@@ -1,29 +1,21 @@
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
-import mongoose, { HydratedDocument } from 'mongoose';
+import { HydratedDocument } from 'mongoose';
 import { SoftDeleteModel } from 'soft-delete-plugin-mongoose';
+import * as mongoose from 'mongoose';
 
-export type UserDocument = HydratedDocument<User>;
-export type UserModel = SoftDeleteModel<UserDocument>;
+export type CompanyDocument = HydratedDocument<Company>;
+export type CompanyModel = SoftDeleteModel<CompanyDocument>;
 
 @Schema({ timestamps: true })
-export class User {
-  @Prop({ required: true })
-  email: string;
-
-  @Prop({ required: true })
-  password: string;
-
+export class Company {
   @Prop()
   name: string;
-
-  @Prop()
-  phone: string;
 
   @Prop()
   address: string;
 
   @Prop()
-  age: number;
+  description: string;
 
   @Prop()
   createdAt: Date;
@@ -56,4 +48,4 @@ export class User {
   };
 }
 
-export const UserSchema = SchemaFactory.createForClass(User);
+export const CompanySchema = SchemaFactory.createForClass(Company);

@@ -43,7 +43,7 @@ export class UsersService {
     return this.userModel.find().skip(skip).limit(limit).sort(sort);
   }
 
-  findOne(id: number) {
+  findOne(id: string) {
     return this.userModel.findOne({ _id: id });
   }
 

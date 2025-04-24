@@ -9,6 +9,7 @@ import { ProductModule } from './product/product.module';
 import { JwtAuthGuard } from './auth/jwt-auth.guard';
 import { APP_FILTER, APP_GUARD } from '@nestjs/core';
 import { softDeletePlugin } from 'soft-delete-plugin-mongoose';
+import { CompaniesModule } from './companies/companies.module';
 
 @Module({
   imports: [
@@ -34,6 +35,7 @@ import { softDeletePlugin } from 'soft-delete-plugin-mongoose';
     AuthModule,
     UsersModule,
     ProductModule,
+    CompaniesModule,
   ],
   controllers: [AppController],
   providers: [
