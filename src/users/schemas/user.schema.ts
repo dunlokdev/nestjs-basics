@@ -1,16 +1,18 @@
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
-import mongoose, { HydratedDocument } from 'mongoose';
-import { SoftDeleteModel } from 'soft-delete-plugin-mongoose';
+import { HydratedDocument, Types } from 'mongoose';
 
-export type UserDocument = HydratedDocument<User>;
-export type UserModel = SoftDeleteModel<UserDocument>;
+export type UserDocument = HydratedDocument<User> & {
+  deleted?: boolean; // Trạng thái xóa mềm
+  deletedAt?: Date; // Thời gian xóa mềm
+  deletedBy?: Types.ObjectId; // Người thực hiện xóa mềm
+};
 
 @Schema({ timestamps: true })
 export class User {
   @Prop({ required: true })
   email: string;
 
-  @Prop({ required: true })
+  @Prop({ required: true, select: false })
   password: string;
 
   @Prop()
@@ -31,29 +33,11 @@ export class User {
   @Prop()
   updatedAt: Date;
 
-  @Prop()
-  deletedAt: Date;
+  @Prop({ type: Types.ObjectId, ref: 'User' })
+  createdBy: Types.ObjectId;
 
-  @Prop()
-  isDeleted: boolean;
-
-  @Prop({ type: Object })
-  createdBy: {
-    _id: mongoose.Schema.Types.ObjectId;
-    email: string;
-  };
-
-  @Prop({ type: Object })
-  updatedBy: {
-    _id: mongoose.Schema.Types.ObjectId;
-    email: string;
-  };
-
-  @Prop({ type: Object })
-  deletedBy: {
-    _id: mongoose.Schema.Types.ObjectId;
-    email: string;
-  };
+  @Prop({ type: Types.ObjectId, ref: 'User' })
+  updatedBy: Types.ObjectId;
 }
 
 export const UserSchema = SchemaFactory.createForClass(User);

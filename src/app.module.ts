@@ -10,6 +10,7 @@ import { JwtAuthGuard } from './auth/jwt-auth.guard';
 import { APP_FILTER, APP_GUARD } from '@nestjs/core';
 import { softDeletePlugin } from 'soft-delete-plugin-mongoose';
 import { CompaniesModule } from './companies/companies.module';
+import mongooseDelete from 'mongoose-delete';
 
 @Module({
   imports: [
@@ -21,9 +22,12 @@ import { CompaniesModule } from './companies/companies.module';
         retryDelay: 1000, // Delay giữa các lần thử (ms)
         // Thêm debug
         connectionFactory: (connection) => {
-          connection.on('error', (err) => console.log('MongoDB error:', err));
-          connection.on('connected', () => console.log('MongoDB connected'));
-          connection.plugin(softDeletePlugin);
+          connection.plugin(mongooseDelete, {
+            deletedAt: true,
+            deletedBy: true,
+            overrideMethods: true,
+            indexFields: true,
+          });
           return connection;
         },
       }),

@@ -1,13 +1,16 @@
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
 import { HydratedDocument, Types } from 'mongoose';
-import { SoftDeleteModel } from 'soft-delete-plugin-mongoose';
 
-export type CompanyDocument = HydratedDocument<Company>;
-export type CompanyModel = SoftDeleteModel<CompanyDocument>;
+// Định nghĩa kiểu CompanyDocument với các trường từ mongoose-delete
+export type CompanyDocument = HydratedDocument<Company> & {
+  deleted?: boolean; // Trạng thái xóa mềm
+  deletedAt?: Date; // Thời gian xóa mềm
+  deletedBy?: Types.ObjectId; // Người thực hiện xóa mềm
+};
 
 @Schema({ timestamps: true })
 export class Company {
-  @Prop()
+  @Prop({ required: true })
   name: string;
 
   @Prop()
@@ -16,35 +19,13 @@ export class Company {
   @Prop()
   description: string;
 
-  @Prop()
-  createdAt: Date;
+  @Prop({ type: Types.ObjectId, ref: 'User' })
+  createdBy: Types.ObjectId;
 
-  @Prop()
-  updatedAt: Date;
+  @Prop({ type: Types.ObjectId, ref: 'User' })
+  updatedBy: Types.ObjectId;
 
-  @Prop()
-  deletedAt: Date;
-
-  @Prop()
-  isDeleted: boolean;
-
-  @Prop({ type: Object })
-  createdBy: {
-    _id: Types.ObjectId;
-    email: string;
-  };
-
-  @Prop({ type: Object })
-  updatedBy: {
-    _id: Types.ObjectId;
-    email: string;
-  };
-
-  @Prop({ type: Object })
-  deletedBy: {
-    _id: Types.ObjectId;
-    email: string;
-  };
+  // Trường deletedBy không cần khai báo ở đây vì plugin sẽ tự quản lý
 }
 
 export const CompanySchema = SchemaFactory.createForClass(Company);

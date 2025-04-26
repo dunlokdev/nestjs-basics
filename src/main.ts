@@ -23,6 +23,7 @@ async function bootstrap() {
     }),
   );
   app.useGlobalGuards(new JwtAuthGuard(reflector)); // Use the custom JWT guard
+  app.set('query parser', 'extended');
 
   // set up CORS
   app.enableCors({
