@@ -9,6 +9,9 @@ export type UserDocument = HydratedDocument<User> & {
 
 @Schema({ timestamps: true })
 export class User {
+  @Prop({ unique: true, required: true })
+  name: string;
+
   @Prop({ required: true })
   email: string;
 
@@ -16,16 +19,22 @@ export class User {
   password: string;
 
   @Prop()
-  name: string;
+  age: number;
 
   @Prop()
-  phone: string;
+  gender: string;
 
   @Prop()
   address: string;
 
+  @Prop({ type: Types.ObjectId, ref: 'Company' })
+  company: Types.ObjectId;
+
   @Prop()
-  age: number;
+  role: string;
+
+  @Prop()
+  refreshToken: string;
 
   @Prop()
   createdAt: Date;
