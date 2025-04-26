@@ -91,14 +91,16 @@ export class CompaniesService {
     }
 
     // Cập nhật công ty
-    const updatedCompany = await this.companyModel.findByIdAndUpdate(
-      id,
-      {
-        ...updateCompanyDto,
-        updatedBy: new Types.ObjectId(user._id), // Chỉ lưu _id thay vì toàn bộ đối tượng
-      },
-      { new: true },
-    );
+    const updatedCompany = await this.companyModel
+      .findByIdAndUpdate(
+        id,
+        {
+          ...updateCompanyDto,
+          updatedBy: new Types.ObjectId(user._id), // Chỉ lưu _id thay vì toàn bộ đối tượng
+        },
+        { new: true },
+      )
+      .lean();
 
     if (!updatedCompany) {
       throw new NotFoundException('Company not found');
@@ -108,16 +110,13 @@ export class CompaniesService {
   }
 
   async remove(id: string, user: IUser) {
-    if (!Types.ObjectId.isValid(id)) {
-      throw new BadRequestException('Invalid company ID format');
-    }
+    if (!Types.ObjectId.isValid(id))
+      throw new BadRequestException('Invalid id');
 
-    const deleted = await this.companyModel.delete({ _id: id }, user._id);
+    const res = await this.companyModel.delete({ _id: id }, user._id); // plugin
+    if (res.deletedCount === 0)
+      throw new NotFoundException('Company not found');
 
-    if (!deleted) {
-      throw new NotFoundException('Company not found or already deleted');
-    }
-
-    return { message: 'Company soft deleted successfully' };
+    return null; // sẽ trở thành data.result = null
   }
 }

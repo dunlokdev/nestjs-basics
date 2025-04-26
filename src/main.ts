@@ -5,6 +5,7 @@ import { join } from 'path';
 import { ConfigService } from '@nestjs/config';
 import { ValidationPipe } from '@nestjs/common';
 import { JwtAuthGuard } from './auth/jwt-auth.guard';
+import { TransformInterceptor } from './interceptor/transform.interceptor';
 
 async function bootstrap() {
   const app = await NestFactory.create<NestExpressApplication>(AppModule);
@@ -23,6 +24,7 @@ async function bootstrap() {
     }),
   );
   app.useGlobalGuards(new JwtAuthGuard(reflector)); // Use the custom JWT guard
+  app.useGlobalInterceptors(new TransformInterceptor(reflector));
   app.set('query parser', 'extended');
 
   // set up CORS
