@@ -22,6 +22,7 @@ export class TransformInterceptor<T> implements NestInterceptor<T, any> {
 
     return next.handle().pipe(
       map((original: any) => {
+        const API_AUTHOR = process.env.AUTHOR || 'Duong My Loc';
         // service trả về { result, meta } hay chỉ result?
         const hasPaging =
           original &&
@@ -29,6 +30,7 @@ export class TransformInterceptor<T> implements NestInterceptor<T, any> {
           original.meta !== undefined;
 
         return {
+          author: API_AUTHOR,
           statusCode: res.statusCode ?? 200,
           message: metaMsg ?? '', // controller gắn → ưu tiên
           data: hasPaging

@@ -1,4 +1,5 @@
 export interface ApiResponse<T = unknown> {
+  author?: string;
   statusCode: number;
   message: string;
   data: {
